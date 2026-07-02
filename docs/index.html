@@ -379,6 +379,20 @@ table.req td code.inline { white-space: nowrap; }
 }
 .reveal .reveal-body .why b { color: var(--cp-accent); }
 
+/* Simulated terminal panel — a "screenshot" of expected output, self-contained */
+.term { border: 1px solid var(--cp-border); border-radius: 10px; overflow: hidden; margin: 14px 0; box-shadow: 0 0 2px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.14); }
+.term-bar { display: flex; align-items: center; gap: 7px; background: var(--cp-bg-elevated); border-bottom: 1px solid var(--cp-border); padding: 8px 12px; }
+.term-bar .tdot { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
+.term-bar .tdot.r { background: #ff5f56; } .term-bar .tdot.y { background: #ffbd2e; } .term-bar .tdot.g { background: #27c93f; }
+.term-bar .tlabel { margin-left: 6px; font-size: 11px; color: var(--cp-text-soft); font-family: "Segoe UI", sans-serif; }
+.term-body { background: var(--cp-surface-soft); padding: 14px 16px; font-family: Consolas, "Courier New", monospace; font-size: 12.5px; line-height: 1.7; overflow-x: auto; white-space: pre; color: var(--cp-text); }
+.term-body .pr { color: var(--cp-accent); font-weight: 700; }
+.term-body .cmd { color: var(--cp-text); font-weight: 600; }
+.term-body .cmt { color: var(--cp-text-soft); }
+.term-body .ok { color: var(--cp-success); }
+.term-body .hl { color: var(--cp-link); }
+.term-cap { font-size: 11px; color: var(--cp-text-soft); margin: 12px 0 -4px 2px; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; }
   .rail {
@@ -726,6 +740,24 @@ git add hello.txt         <span class="cm"># stage it for the next snapshot</spa
 git commit -m "Add my name to hello.txt"</div>
               <p>Confirm it landed in history:</p>
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git log --oneline</div>
+              <div class="term-cap">What you should see</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
+<div class="term-body"><span class="pr">$</span> <span class="cmd">git status</span>
+On branch main
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+	modified:   hello.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+<span class="pr">$</span> <span class="cmd">git add hello.txt</span>
+<span class="pr">$</span> <span class="cmd">git commit -m "Add my name to hello.txt"</span>
+<span class="ok">[main 5faa7f4] Add my name to hello.txt</span>
+ 1 file changed, 1 insertion(+)
+<span class="pr">$</span> <span class="cmd">git log --oneline</span>
+<span class="hl">5faa7f4</span> Add my name to hello.txt
+<span class="hl">ae54cec</span> Initial commit</div>
+              </div>
               <div class="why"><b>Why two steps (add, then commit)?</b> Git separates <em>choosing</em>
               what goes in a snapshot (<code class="inline">add</code>, the &ldquo;staging area&rdquo;)
               from <em>saving</em> it (<code class="inline">commit</code>). That lets you commit only
@@ -749,6 +781,12 @@ git commit -m "Add my name to hello.txt"</div>
             <summary>Check your approach</summary>
             <div class="reveal-body">
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c practice-branch</div>
+              <div class="term-cap">What you should see</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
+<div class="term-body"><span class="pr">$</span> <span class="cmd">git switch -c practice-branch</span>
+<span class="ok">Switched to a new branch 'practice-branch'</span></div>
+              </div>
               <div class="why"><b>What&rsquo;s going on?</b> The <code class="inline">-c</code> means
               &ldquo;create&rdquo;. You now have a second, independent line of work. Commits you make
               here do <em>not</em> touch <code class="inline">main</code> &mdash; that&rsquo;s what makes
@@ -767,6 +805,17 @@ git commit -m "Add my name to hello.txt"</div>
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git add hello.txt
 git commit -m "Add a second line on a branch"
 git switch main</div>
+              <div class="term-cap">What you should see</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
+<div class="term-body"><span class="pr">$</span> <span class="cmd">git add hello.txt</span>
+<span class="pr">$</span> <span class="cmd">git commit -m "Add a second line on a branch"</span>
+<span class="ok">[practice-branch d3f91e7] Add a second line on a branch</span>
+ 1 file changed, 1 insertion(+)
+<span class="pr">$</span> <span class="cmd">git switch main</span>
+<span class="ok">Switched to branch 'main'</span>
+<span class="cmt"># open hello.txt now — your second line is not here</span></div>
+              </div>
               <div class="why"><b>Notice the surprise.</b> On <code class="inline">main</code>, your
               second line is <em>gone</em>. It hasn&rsquo;t disappeared &mdash; it lives on
               <code class="inline">practice-branch</code>. Each branch has its own version of the files.
@@ -783,6 +832,17 @@ git switch main</div>
             <div class="reveal-body">
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git merge practice-branch   <span class="cm"># now your line appears on main</span>
 git branch -d practice-branch</div>
+              <div class="term-cap">What you should see</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
+<div class="term-body"><span class="pr">$</span> <span class="cmd">git merge practice-branch</span>
+Updating 5faa7f4..d3f91e7
+<span class="ok">Fast-forward</span>
+ hello.txt | 1 +
+ 1 file changed, 1 insertion(+)
+<span class="pr">$</span> <span class="cmd">git branch -d practice-branch</span>
+<span class="ok">Deleted branch practice-branch (was d3f91e7).</span></div>
+              </div>
               <div class="why"><b>Why merge, then delete?</b> <code class="inline">merge</code> copies the
               branch&rsquo;s commits into <code class="inline">main</code>, so the work is now part of the
               main line. Once merged, the branch has done its job &mdash;
@@ -815,6 +875,22 @@ git push -u origin my-first-pr</div>
               Finally, update your local <code class="inline">main</code>:</p>
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main
 git pull</div>
+              <div class="term-cap">What you should see</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
+<div class="term-body"><span class="pr">$</span> <span class="cmd">git push -u origin my-first-pr</span>
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Writing objects: 100% (3/3), 320 bytes, done.
+Total 3 (delta 1), reused 0 (delta 0)
+remote:
+remote: Create a pull request for 'my-first-pr' on GitHub by visiting:
+remote:      <span class="hl">https://github.com/you/repo/pull/new/my-first-pr</span>
+remote:
+To https://github.com/you/repo.git
+ <span class="ok">* [new branch]      my-first-pr -&gt; my-first-pr</span>
+branch 'my-first-pr' set up to track 'origin/my-first-pr'.</div>
+              </div>
               <div class="why"><b>What is <code class="inline">-u origin</code> doing?</b> It pushes your
               branch to GitHub (<code class="inline">origin</code>) and links your local branch to it, so
               future <code class="inline">git push</code>/<code class="inline">pull</code> need no extra
@@ -847,6 +923,20 @@ copilot                          <span class="cm"># start in your repo folder, t
                 <li>&ldquo;Make a new branch called copilot-practice and switch to it.&rdquo;</li>
                 <li>&ldquo;Commit my changes with a clear message, push, and open a pull request.&rdquo;</li>
               </ul>
+              <div class="term-cap">What it looks like (example)</div>
+              <div class="term">
+                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">GitHub Copilot CLI</span></div>
+<div class="term-body"><span class="pr">&gt;</span> <span class="cmd">Make a branch called copilot-practice and commit my changes.</span>
+
+  I'll run these git commands:
+    <span class="hl">git switch -c copilot-practice</span>
+    <span class="hl">git add -A &amp;&amp; git commit -m "Update hello.txt"</span>
+
+  Allow Copilot to run this command?
+    <span class="ok">&gt; 1. Yes</span>
+      2. Yes, and don't ask again this session
+      3. No, and tell Copilot what to do differently (Esc)</div>
+              </div>
               <div class="why"><b>Stay in the driver&rsquo;s seat.</b> Before running anything that
               changes files, Copilot shows you the exact command and asks for approval. Read each one &mdash;
               you already know these commands now, so you can tell whether it&rsquo;s doing the right thing.
