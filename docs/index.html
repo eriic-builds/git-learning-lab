@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Git Learning Lab — Git, GitHub &amp; Copilot CLI</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const saved = (() => { try { return localStorage.getItem("gllTheme"); } catch (e) { return null; } })();
+    const theme =
+      saved || param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+
+/* Dyslexia-friendly reading theme: warm low-glare cream, softer contrast,
+   looser spacing and a heavier rounded font to reduce visual stress. */
+html[data-theme="reading"] {
+  color-scheme: light;
+  --cp-bg: #f3e9d2;
+  --cp-bg-elevated: #f7f0df;
+  --cp-surface: #fbf6ea;
+  --cp-surface-soft: #efe4cb;
+  --cp-border: #d8c7a3;
+  --cp-border-strong: #b29c70;
+  --cp-text: #3a3327;
+  --cp-text-muted: #5f5642;
+  --cp-text-soft: #6f6650;
+  --cp-accent: #9a4a1f;
+  --cp-accent-hover: #823c17;
+  --cp-accent-soft: rgba(154, 74, 31, 0.10);
+  --cp-accent-fg: #fbf6ea;
+  --cp-success: #2f7d32;
+  --cp-danger: #b3261e;
+  --cp-warning: #b06d05;
+  --cp-link: #1f5d8c;
+  --cp-shadow: 0 18px 48px rgba(80, 60, 20, 0.14);
+  --cp-overlay: rgba(251, 246, 234, 0.82);
+  --cp-panel: rgba(251, 246, 234, 0.86);
+  --cp-panel-strong: rgba(251, 246, 234, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.4);
+  --cp-highlight: rgba(154, 74, 31, 0.12);
+}
+html[data-theme="reading"] body {
+  font-family: "Atkinson Hyperlegible", Verdana, "Segoe UI", Tahoma, sans-serif;
+  letter-spacing: 0.012em;
+  word-spacing: 0.06em;
+  line-height: 1.85;
+}
+html[data-theme="reading"] p,
+html[data-theme="reading"] li,
+html[data-theme="reading"] td { max-width: 68ch; }
+html[data-theme="reading"] .content { padding-top: 40px; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1180px;
+  margin: 0 auto;
+  gap: 0;
+}
+
+/* ---------- Side rail ---------- */
+.rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  padding: 28px 18px 28px 24px;
+  border-right: 1px solid var(--cp-border);
+  background: var(--cp-bg-elevated);
+  overflow-y: auto;
+}
+.rail-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.rail-brand .dot {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--cp-accent);
+  display: grid; place-items: center;
+  color: var(--cp-accent-fg); font-weight: 700; font-size: 15px;
+  flex-shrink: 0;
+}
+.rail-brand .title { font-size: 13px; font-weight: 600; line-height: 1.25; }
+.rail-sub { font-size: 11px; color: var(--cp-text-soft); margin: 4px 0 22px 0; letter-spacing: .02em; }
+
+.theme-toggle {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px; padding: 3px;
+}
+.theme-toggle button {
+  flex: 1; cursor: pointer;
+  font-family: inherit; font-size: 11px; font-weight: 600;
+  color: var(--cp-text-muted);
+  background: transparent; border: none; border-radius: 999px;
+  padding: 5px 4px; transition: background .15s, color .15s;
+}
+.theme-toggle button:hover { color: var(--cp-text); }
+.theme-toggle button.active {
+  background: var(--cp-accent); color: var(--cp-accent-fg);
+}
+
+.rail-progress { font-size: 11px; color: var(--cp-text-muted); margin-bottom: 14px; display:flex; justify-content:space-between; }
+.rail-progress b { color: var(--cp-accent); }
+
+.nav { position: relative; }
+.nav::before {
+  content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--cp-border);
+}
+.nav a {
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  padding: 7px 0 7px 26px;
+  font-size: 13px; color: var(--cp-text-muted);
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav a .node {
+  position: absolute; left: 2px; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--cp-surface);
+  border: 2px solid var(--cp-border-strong);
+  transition: all .15s;
+}
+.nav a:hover { color: var(--cp-text); }
+.nav a.active { color: var(--cp-accent); font-weight: 600; }
+.nav a.active .node {
+  background: var(--cp-accent); border-color: var(--cp-accent);
+  box-shadow: 0 0 0 4px var(--cp-accent-soft);
+}
+.nav a .lbl-num { color: var(--cp-text-soft); font-variant-numeric: tabular-nums; font-size: 11px; }
+.nav a.active .lbl-num { color: var(--cp-accent); }
+
+/* ---------- Content ---------- */
+.content { padding: 48px 56px 120px 56px; min-width: 0; }
+
+.hero { margin-bottom: 24px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12px; font-weight: 600;
+  color: var(--cp-accent); text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 12px;
+}
+.hero h1 { font-size: 32px; line-height: 1.2; font-weight: 700; margin-bottom: 14px; }
+.hero p { font-size: 16px; color: var(--cp-text-muted); max-width: 70ch; }
+.hero .meta {
+  margin-top: 18px; font-size: 12px; color: var(--cp-text-soft);
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.hero .meta a { color: var(--cp-link); text-decoration: none; }
+.hero .meta a:hover { text-decoration: underline; }
+
+section { scroll-margin-top: 24px; padding-top: 40px; }
+section > h2 {
+  font-size: 22px; font-weight: 700; margin-bottom: 6px;
+  display: flex; align-items: baseline; gap: 12px;
+}
+section > h2 .snum {
+  font-size: 13px; color: var(--cp-accent); font-weight: 700;
+  background: var(--cp-accent-soft); padding: 2px 9px; border-radius: 999px;
+}
+section > .lede { color: var(--cp-text-muted); margin-bottom: 18px; max-width: 72ch; }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+  margin-bottom: 16px;
+}
+
+p { margin-bottom: 12px; }
+.content a { color: var(--cp-link); text-decoration: none; }
+.content a:hover { text-decoration: underline; }
+
+ul.clean, ol.steps { margin: 4px 0 4px 0; padding-left: 0; list-style: none; }
+ul.clean li { position: relative; padding-left: 22px; margin-bottom: 10px; }
+ul.clean li::before {
+  content: ""; position: absolute; left: 4px; top: 9px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--cp-accent);
+}
+ol.steps { counter-reset: s; }
+ol.steps > li {
+  position: relative; padding-left: 40px; margin-bottom: 16px; counter-increment: s;
+}
+ol.steps > li::before {
+  content: counter(s); position: absolute; left: 0; top: -2px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--cp-accent); color: var(--cp-accent-fg);
+  font-size: 13px; font-weight: 700; display: grid; place-items: center;
+}
+ol.steps > li > strong:first-child { display:block; margin-bottom: 2px; }
+
+code.inline {
+  font-family: Consolas, "Courier New", Courier, monospace;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px; padding: 1px 6px; font-size: 13px;
+  color: var(--cp-accent);
+}
+
+.codeblock {
+  position: relative;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 16px 18px; margin: 14px 0;
+  font-family: Consolas, "Courier New", Courier, monospace;
+  font-size: 13px; line-height: 1.6;
+  overflow-x: auto; white-space: pre;
+  color: var(--cp-text);
+}
+.codeblock .cm { color: var(--cp-text-soft); }
+.codeblock .pm { color: var(--cp-accent); }
+.copybtn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--cp-surface); border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted); font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  font-family: "Segoe UI", sans-serif;
+}
+.copybtn:hover { color: var(--cp-accent); border-color: var(--cp-accent); }
+
+.callout {
+  border-left: 3px solid var(--cp-accent);
+  background: var(--cp-accent-soft);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px; margin: 14px 0; font-size: 14px;
+}
+.callout.warn { border-left-color: var(--cp-warning); background: rgba(245,158,11,.08); }
+.callout.good { border-left-color: var(--cp-success); background: rgba(22,163,74,.08); }
+.callout .ct { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; display:block; margin-bottom: 3px; }
+.callout.warn .ct { color: var(--cp-warning); }
+.callout.good .ct { color: var(--cp-success); }
+.callout:not(.warn):not(.good) .ct { color: var(--cp-accent); }
+
+table.req { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14px; }
+table.req th, table.req td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+table.req th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--cp-text-soft); }
+table.req td:first-child { font-weight: 600; white-space: nowrap; }
+table.req td code.inline { white-space: nowrap; }
+
+.pillrow { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 2px; }
+.pill {
+  font-size: 12px; padding: 4px 11px; border-radius: 999px;
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+}
+.pill b { color: var(--cp-accent); }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.split .card { margin-bottom: 0; }
+.split h3 { font-size: 15px; margin-bottom: 8px; display:flex; align-items:center; gap:8px; }
+.split h3 .tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: var(--cp-accent-soft); color: var(--cp-accent); }
+
+.wiifm {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 3px solid var(--cp-accent);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-top: 4px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.wiifm h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:8px; }
+.wiifm h3 .tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--cp-accent-soft); color: var(--cp-accent); }
+
+.footer-note { margin-top: 40px; font-size: 12px; color: var(--cp-text-soft); border-top: 1px solid var(--cp-border); padding-top: 18px; }
+
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .rail {
+    position: sticky; top: 0; height: auto; z-index: 50;
+    padding: 12px 16px;
+    border-right: none; border-bottom: 1px solid var(--cp-border);
+    background: var(--cp-panel-strong);
+    backdrop-filter: blur(8px);
+  }
+  .rail-brand { margin-bottom: 0; }
+  .rail-brand .title { font-size: 12px; }
+  .rail-sub, .rail-progress { display: none; }
+  .nav {
+    display: flex; flex-direction: row; gap: 4px;
+    overflow-x: auto; margin-top: 10px;
+    scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+  }
+  .nav::before { display: none; }
+  .nav a {
+    flex: 0 0 auto;
+    padding: 6px 12px 6px 12px;
+    border: 1px solid var(--cp-border); border-radius: 999px;
+    white-space: nowrap; gap: 6px;
+    background: var(--cp-surface);
+  }
+  .nav a .node { display: none; }
+  .nav a.active { background: var(--cp-accent-soft); border-color: var(--cp-accent); }
+  .content { padding: 28px 20px 80px; }
+  .split { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- SIDE RAIL -->
+  <aside class="rail">
+    <div class="rail-brand">
+      <div class="dot">GL</div>
+      <div class="title">Git Learning Lab</div>
+    </div>
+    <div class="rail-sub">Git, GitHub &amp; Copilot CLI — for non-developers</div>
+    <div class="theme-toggle" id="themeToggle" role="group" aria-label="Color theme">
+      <button data-theme-val="light" aria-label="Light theme">Light</button>
+      <button data-theme-val="dark" aria-label="Dark theme">Dark</button>
+      <button data-theme-val="reading" aria-label="Reading theme, dyslexia friendly" title="Dyslexia-friendly: warm low-glare background, readable font, extra spacing">Reading</button>
+    </div>
+    <div class="rail-progress"><span>Progress</span><span><b id="pct">0%</b></span></div>
+    <nav class="nav" id="nav">
+      <a href="#mental"><span class="node"></span><span class="lbl-num">00</span> Mental model</a>
+      <a href="#setup"><span class="node"></span><span class="lbl-num">01</span> Setup</a>
+      <a href="#loop"><span class="node"></span><span class="lbl-num">02</span> Everyday loop</a>
+      <a href="#undo"><span class="node"></span><span class="lbl-num">03</span> Undo mistakes</a>
+      <a href="#branches"><span class="node"></span><span class="lbl-num">04</span> Branches</a>
+      <a href="#prs"><span class="node"></span><span class="lbl-num">05</span> Pull requests</a>
+      <a href="#copilot"><span class="node"></span><span class="lbl-num">06</span> Copilot CLI</a>
+      <a href="#practice"><span class="node"></span><span class="lbl-num">07</span> Practice lab</a>
+      <a href="#gotchas"><span class="node"></span><span class="lbl-num">08</span> Gotchas</a>
+    </nav>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <header class="hero">
+      <span class="eyebrow">Learn by doing</span>
+      <h1>Git, GitHub &amp; Copilot CLI — a hands-on lab</h1>
+      <p>
+        A safe place to <strong>play and build muscle memory</strong>. You will go from
+        &ldquo;what is a commit?&rdquo; to opening a pull request &mdash; and then let the
+        <strong>GitHub Copilot CLI</strong> do the git work for you, in plain English.
+        No prior coding needed.
+      </p>
+      <div class="meta">
+        <span>&#9201; Nine short sections</span>
+        <a href="https://github.com/eriic-builds/git-learning-lab">Repo &rarr;</a>
+        <a href="https://github.com/eriic-builds/git-learning-lab/tree/main/practice">Practice folder &rarr;</a>
+      </div>
+
+      <div class="wiifm" style="margin-top:22px">
+        <h3>What&rsquo;s in it for you <span class="tag">why bother</span></h3>
+        <ul class="clean" style="margin-bottom:0">
+          <li><strong>Version control that saves you.</strong> Every change is recorded. You can always go back to a version that worked.</li>
+          <li><strong>Confidence to experiment.</strong> Branches let you try ideas without touching the good copy.</li>
+          <li><strong>A public presence.</strong> Your work lives on GitHub &mdash; shareable, backed up, and visible.</li>
+          <li><strong>Copilot does the typing.</strong> Once you understand the moves, the CLI runs them for you from a plain-English prompt.</li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="callout">
+      <span class="ct">How to read this</span>
+      <strong>Tell &rarr; Teach &rarr; Tell again.</strong> Each section tells you the goal,
+      teaches the exact commands, then recaps. Copy every command with the button on its right,
+      and practice for real in section&nbsp;07.
+    </div>
+
+    <!-- 00 MENTAL MODEL -->
+    <section id="mental">
+      <h2><span class="snum">00</span> The mental model</h2>
+      <p class="lede">Five words unlock everything else. Learn these and the commands stop feeling random.</p>
+      <div class="card">
+        <table class="req">
+          <tr><th>Word</th><th>Plain-English meaning</th></tr>
+          <tr><td>Repository (repo)</td><td>A project folder that git is watching. It remembers every saved version of every file.</td></tr>
+          <tr><td>Commit</td><td>A saved snapshot with a short note (&ldquo;added intro section&rdquo;). Like a labelled restore point.</td></tr>
+          <tr><td>Remote</td><td>The copy of your repo that lives on GitHub. Usually called <code class="inline">origin</code>.</td></tr>
+          <tr><td>Push / Pull</td><td>Push = send your commits up to GitHub. Pull = bring GitHub&rsquo;s commits down to you.</td></tr>
+          <tr><td>Branch</td><td>A parallel line of work. Try things safely, then merge back into <code class="inline">main</code>.</td></tr>
+        </table>
+      </div>
+      <div class="callout good">
+        <span class="ct">The one loop to remember</span>
+        <strong>edit &rarr; add &rarr; commit &rarr; push.</strong> That is 90% of daily git.
+        Everything else is a variation on it.
+      </div>
+    </section>
+
+    <!-- 01 SETUP -->
+    <section id="setup">
+      <h2><span class="snum">01</span> One-time setup</h2>
+      <p class="lede">Do this once per computer. It installs git and stamps your name on every commit.</p>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">A. Install git</h3>
+        <div class="pillrow">
+          <span class="pill"><b>Windows</b></span>
+          <span class="pill"><b>macOS</b></span>
+        </div>
+        <p style="margin-top:10px">Windows (PowerShell):</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>winget install --id Git.Git -e</div>
+        <p>macOS (Terminal, with Homebrew):</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>brew install git</div>
+        <p>Check it worked:</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git --version</div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">B. Tell git who you are</h3>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git config --global user.name "<span class="pm">Your Name</span>"
+git config --global user.email "<span class="pm">you@example.com</span>"</div>
+        <div class="callout warn">
+          <span class="ct">Use your GitHub email</span>
+          Use the same email as your GitHub account so your commits link to your profile.
+          The private <code class="inline">username@users.noreply.github.com</code> address works too.
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 EVERYDAY LOOP -->
+    <section id="loop">
+      <h2><span class="snum">02</span> The everyday loop</h2>
+      <p class="lede">Get a project, change it, save the change, send it to GitHub. This is the core rhythm.</p>
+      <div class="card">
+        <ol class="steps">
+          <li><strong>Clone</strong> &mdash; download a GitHub repo to your computer.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git clone https://github.com/<span class="pm">you</span>/<span class="pm">repo</span>.git</div>
+          </li>
+          <li><strong>Check status</strong> &mdash; see what you changed. Run this often.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git status</div>
+          </li>
+          <li><strong>Stage (add)</strong> &mdash; pick which changes go into the next snapshot.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git add .          <span class="cm"># everything, or name a file: git add notes.md</span></div>
+          </li>
+          <li><strong>Commit</strong> &mdash; save the snapshot with a short message.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git commit -m "<span class="pm">Describe what changed</span>"</div>
+          </li>
+          <li><strong>Push</strong> &mdash; send your commits up to GitHub.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git push</div>
+          </li>
+          <li><strong>Pull</strong> &mdash; before you start, grab anything new from GitHub.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git pull</div>
+          </li>
+        </ol>
+      </div>
+      <div class="callout">
+        <span class="ct">Good commit messages</span>
+        Finish the sentence &ldquo;This commit will&hellip;&rdquo; &mdash; e.g.
+        <code class="inline">Add contact section</code>, not <code class="inline">stuff</code>.
+        Present tense, short, specific.
+      </div>
+    </section>
+
+    <!-- 03 UNDO -->
+    <section id="undo">
+      <h2><span class="snum">03</span> Undo mistakes safely</h2>
+      <p class="lede">The reason git is calming: almost nothing is permanent. Pick the tool that matches the mistake.</p>
+      <div class="card">
+        <table class="req">
+          <tr><th>Situation</th><th>Command</th></tr>
+          <tr><td>Changed a file, want the last saved version back</td><td><div class="codeblock" style="margin:0"><button class="copybtn" onclick="copyCode(this)">Copy</button>git restore <span class="pm">file.md</span></div></td></tr>
+          <tr><td>Staged a file by mistake (added, not committed)</td><td><div class="codeblock" style="margin:0"><button class="copybtn" onclick="copyCode(this)">Copy</button>git restore --staged <span class="pm">file.md</span></div></td></tr>
+          <tr><td>Typo in your last commit message</td><td><div class="codeblock" style="margin:0"><button class="copybtn" onclick="copyCode(this)">Copy</button>git commit --amend -m "<span class="pm">Better message</span>"</div></td></tr>
+          <tr><td>A commit you already pushed was wrong</td><td><div class="codeblock" style="margin:0"><button class="copybtn" onclick="copyCode(this)">Copy</button>git revert <span class="pm">&lt;commit&gt;</span></div></td></tr>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="ct">Revert vs. delete</span>
+        <code class="inline">git revert</code> makes a <em>new</em> commit that cancels a bad one &mdash;
+        safe, and it keeps history honest. Avoid rewriting history (<code class="inline">reset --hard</code>,
+        force-push) on anything you have shared.
+      </div>
+    </section>
+
+    <!-- 04 BRANCHES -->
+    <section id="branches">
+      <h2><span class="snum">04</span> Branches &amp; merges</h2>
+      <p class="lede">A branch is a safe sandbox. Build your change there, then fold it back into <code class="inline">main</code>.</p>
+      <div class="card">
+        <ol class="steps">
+          <li><strong>Create and switch to a branch</strong>
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c <span class="pm">add-about-page</span></div>
+          </li>
+          <li><strong>Do your work</strong> &mdash; edit, then the usual <code class="inline">add</code> and <code class="inline">commit</code>.</li>
+          <li><strong>Switch back to main</strong>
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main</div>
+          </li>
+          <li><strong>Merge your branch in</strong>
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git merge <span class="pm">add-about-page</span></div>
+          </li>
+        </ol>
+      </div>
+      <div class="callout">
+        <span class="ct">Conflicts are normal</span>
+        If git says &ldquo;merge conflict&rdquo;, two edits touched the same line. Open the file,
+        keep the version you want (delete the <code class="inline">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> markers),
+        then <code class="inline">git add</code> and <code class="inline">git commit</code>. That&rsquo;s it.
+      </div>
+    </section>
+
+    <!-- 05 PULL REQUESTS -->
+    <section id="prs">
+      <h2><span class="snum">05</span> Pull requests on GitHub</h2>
+      <p class="lede">A pull request (PR) is how you propose a change on GitHub &mdash; a place to review before it joins <code class="inline">main</code>.</p>
+      <div class="card">
+        <ol class="steps">
+          <li><strong>Push your branch to GitHub</strong>
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git push -u origin <span class="pm">add-about-page</span></div>
+          </li>
+          <li><strong>Open the PR</strong> &mdash; GitHub shows a &ldquo;Compare &amp; pull request&rdquo; button. Click it, add a title and a note, and create.</li>
+          <li><strong>Review</strong> &mdash; the PR shows exactly what changed, line by line. Others (or you) can comment.</li>
+          <li><strong>Merge</strong> &mdash; click <strong>Merge pull request</strong>. Your change is now in <code class="inline">main</code>.</li>
+          <li><strong>Tidy up</strong> &mdash; delete the branch (GitHub offers a button), then locally:
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main
+git pull</div>
+          </li>
+        </ol>
+      </div>
+      <div class="callout good">
+        <span class="ct">Why PRs, even solo?</span>
+        Working alone, a PR still gives you a clean before/after view of your own change &mdash;
+        a great habit and a readable history for anyone who visits your repo.
+      </div>
+    </section>
+
+    <!-- 06 COPILOT CLI -->
+    <section id="copilot">
+      <h2><span class="snum">06</span> Drive git with GitHub Copilot CLI</h2>
+      <p class="lede">Once you know the moves, you rarely have to type them. Ask Copilot CLI in plain English and it runs the git for you &mdash; asking permission before anything that changes files.</p>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">A. Install &amp; start</h3>
+        <p>Install (needs Node.js 22+), then launch inside your project folder:</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>npm install -g @github/copilot   <span class="cm"># or: winget install GitHub.Copilot</span>
+copilot                          <span class="cm"># start it in your repo folder</span></div>
+        <p>On first launch it confirms you trust the folder, then run <code class="inline">/login</code> to sign in to GitHub.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">B. Prompts that map to what you just learned</h3>
+        <table class="req">
+          <tr><th>You already know</th><th>Just say to Copilot</th></tr>
+          <tr><td>add + commit</td><td>&ldquo;Commit my changes with a clear message.&rdquo;</td></tr>
+          <tr><td>branch</td><td>&ldquo;Make a new branch called add-about-page and switch to it.&rdquo;</td></tr>
+          <tr><td>push + PR</td><td>&ldquo;Push this branch and open a pull request.&rdquo;</td></tr>
+          <tr><td>status / explain</td><td>&ldquo;What changed since my last commit?&rdquo;</td></tr>
+          <tr><td>undo</td><td>&ldquo;Undo my last commit but keep the file changes.&rdquo;</td></tr>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="ct">You stay in control</span>
+        Before Copilot runs anything that modifies or executes files, it asks you to approve.
+        Read the command, then choose <strong>Yes</strong>, or reject and tell it what to do differently.
+        Press <kbd>Esc</kbd> to stop it mid-task. Use <strong>plan mode</strong> (<kbd>Shift</kbd>+<kbd>Tab</kbd>) to agree an approach first.
+      </div>
+      <div class="callout">
+        <span class="ct">Handy in-session commands</span>
+        <code class="inline">/diff</code> review your changes &middot;
+        <code class="inline">/pr</code> work with pull requests &middot;
+        <code class="inline">@file</code> point Copilot at a specific file &middot;
+        <code class="inline">/help</code> full command list.
+      </div>
+    </section>
+
+    <!-- 07 PRACTICE -->
+    <section id="practice">
+      <h2><span class="snum">07</span> The practice lab</h2>
+      <p class="lede">Reading is not learning &mdash; doing is. This repo ships a safe sandbox you cannot break.</p>
+      <div class="card">
+        <p>In the <a href="https://github.com/eriic-builds/git-learning-lab/tree/main/practice"><code class="inline">practice/</code> folder</a> you get a throwaway file and a guided walkthrough. Start by cloning this repo:</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git clone https://github.com/eriic-builds/git-learning-lab.git
+cd git-learning-lab/practice</div>
+        <p>Then follow <code class="inline">exercises.md</code>, which walks you through:</p>
+        <ul class="clean">
+          <li><strong>Exercise 1</strong> &mdash; edit <code class="inline">hello.txt</code>, make your first commit.</li>
+          <li><strong>Exercise 2</strong> &mdash; create a branch, change the file, merge it back.</li>
+          <li><strong>Exercise 3</strong> &mdash; push a branch and open your first pull request.</li>
+          <li><strong>Exercise 4</strong> &mdash; do it all again, this time by asking Copilot CLI.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 08 GOTCHAS -->
+    <section id="gotchas">
+      <h2><span class="snum">08</span> Gotchas &amp; checklist</h2>
+      <p class="lede">The small traps that trip up newcomers &mdash; and how to sidestep them.</p>
+      <div class="card">
+        <table class="req">
+          <tr><th>The trap</th><th>What works</th></tr>
+          <tr><td>&ldquo;Author identity unknown&rdquo; on first commit</td><td>Run the two <code class="inline">git config --global user.name/email</code> commands from section&nbsp;01.</td></tr>
+          <tr><td>Pushed to the wrong branch</td><td>Check with <code class="inline">git status</code> <em>before</em> pushing &mdash; it names your current branch.</td></tr>
+          <tr><td>Forgot to pull, now push is rejected</td><td>Run <code class="inline">git pull</code> first, resolve any conflict, then push again.</td></tr>
+          <tr><td>Committed a file you didn&rsquo;t mean to</td><td>Add its name to a <code class="inline">.gitignore</code> file so git stops tracking new ones.</td></tr>
+          <tr><td>Asked to log in every push</td><td>Let Git Credential Manager (installed with Git for Windows) remember your GitHub login.</td></tr>
+        </table>
+      </div>
+      <div class="callout good">
+        <span class="ct">Before you close this page &mdash; can you&hellip;</span>
+        <ul class="clean" style="margin-bottom:0">
+          <li>Explain <em>commit</em>, <em>push</em>, and <em>branch</em> in one sentence each?</li>
+          <li>Run the <strong>edit &rarr; add &rarr; commit &rarr; push</strong> loop from memory?</li>
+          <li>Create a branch, merge it, and open a pull request?</li>
+          <li>Ask Copilot CLI to do the same &mdash; and know it will ask before it acts?</li>
+        </ul>
+      </div>
+      <p class="footer-note">
+        Built as a personal learning project by
+        <a href="https://github.com/eriic-builds">eriic-builds</a>, and shared so others can learn too.
+        Commands grounded in the official Git and GitHub Copilot CLI documentation.
+        Unofficial community resource &mdash; not affiliated with GitHub or Microsoft.
+      </p>
+    </section>
+  </main>
+</div>
+
+<script>
+  // Theme toggle (Light / Dark / Reading) with persistence
+  (function () {
+    const toggle = document.getElementById('themeToggle');
+    const btns = Array.from(toggle.querySelectorAll('button'));
+    function current() { return document.documentElement.getAttribute('data-theme') || 'light'; }
+    function sync() {
+      const t = current();
+      btns.forEach(b => b.classList.toggle('active', b.dataset.themeVal === t));
+    }
+    btns.forEach(b => b.addEventListener('click', () => {
+      const t = b.dataset.themeVal;
+      document.documentElement.setAttribute('data-theme', t);
+      try { localStorage.setItem('gllTheme', t); } catch (e) {}
+      sync();
+    }));
+    sync();
+  })();
+</script>
+<script>
+  // Scrollspy + progress
+  const links = Array.from(document.querySelectorAll('.nav a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const pct = document.getElementById('pct');
+
+  let atBottom = false;
+  const observer = new IntersectionObserver((entries) => {
+    if (atBottom) return;
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+        const idx = sections.findIndex(s => s.id === id);
+        pct.textContent = Math.round(((idx + 1) / sections.length) * 100) + '%';
+      }
+    });
+  }, { rootMargin: '0px 0px -78% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Bottom-of-page guard: ensure the final section activates when the page
+  // can't scroll far enough to push it into the observer band.
+  function activate(id) {
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    const idx = sections.findIndex(s => s.id === id);
+    pct.textContent = Math.round(((idx + 1) / sections.length) * 100) + '%';
+  }
+  window.addEventListener('scroll', () => {
+    atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 2;
+    if (atBottom) activate(sections[sections.length - 1].id);
+  }, { passive: true });
+
+  function copyCode(btn) {
+    const block = btn.parentElement;
+    const text = block.innerText.replace(/^Copy\s*/, '');
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.textContent; btn.textContent = 'Copied';
+      setTimeout(() => btn.textContent = old, 1400);
+    });
+  }
+</script>
+</body>
+</html>

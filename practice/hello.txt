@@ -1,0 +1,6 @@
+This is a practice file. Edit me!
+
+Add a line below with your name and today's date, then follow the exercises.
+There are no wrong answers here — this file exists to be changed.
+
+--- start editing below this line ---
