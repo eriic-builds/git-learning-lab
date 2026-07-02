@@ -337,6 +337,48 @@ table.req td code.inline { white-space: nowrap; }
 
 .footer-note { margin-top: 40px; font-size: 12px; color: var(--cp-text-soft); border-top: 1px solid var(--cp-border); padding-top: 18px; }
 
+/* Exercise "try it yourself" reveal dropdowns */
+.exercise { margin-bottom: 16px; }
+.exercise > .goal { font-size: 13px; color: var(--cp-text-muted); margin: 2px 0 10px; }
+.exercise .try {
+  border-left: 3px solid var(--cp-border-strong);
+  background: var(--cp-surface-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px; margin: 10px 0; font-size: 14px;
+}
+.exercise .try .lbl { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--cp-text-soft); display: block; margin-bottom: 3px; }
+.reveal {
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  background: var(--cp-bg-elevated);
+  margin: 10px 0;
+  overflow: hidden;
+}
+.reveal > summary {
+  cursor: pointer; list-style: none;
+  padding: 11px 16px;
+  font-size: 13px; font-weight: 600; color: var(--cp-accent);
+  display: flex; align-items: center; gap: 9px;
+  user-select: none;
+}
+.reveal > summary::-webkit-details-marker { display: none; }
+.reveal > summary::before {
+  content: "▸"; font-size: 12px; color: var(--cp-accent);
+  transition: transform .15s;
+}
+.reveal[open] > summary::before { transform: rotate(90deg); }
+.reveal > summary:hover { color: var(--cp-accent-hover); }
+.reveal .reveal-body {
+  padding: 2px 16px 16px; font-size: 14px;
+  border-top: 1px solid var(--cp-border);
+}
+.reveal .reveal-body .why {
+  background: var(--cp-accent-soft);
+  border-radius: 8px; padding: 10px 14px; margin: 12px 0 0;
+  font-size: 13px;
+}
+.reveal .reveal-body .why b { color: var(--cp-accent); }
+
 @media (max-width: 760px) {
   .layout { grid-template-columns: 1fr; }
   .rail {
@@ -628,18 +670,173 @@ copilot                          <span class="cm"># start it in your repo folder
     <!-- 07 PRACTICE -->
     <section id="practice">
       <h2><span class="snum">07</span> The practice lab</h2>
-      <p class="lede">Reading is not learning &mdash; doing is. This repo ships a safe sandbox you cannot break.</p>
+      <p class="lede">Reading is not learning &mdash; doing is. Work these exercises in a safe sandbox you cannot break. For each step, <strong>try it yourself first</strong>, then open the dropdown to check your approach and understand what just happened.</p>
+
       <div class="card">
-        <p>In the <a href="https://github.com/eriic-builds/git-learning-lab/tree/main/practice"><code class="inline">practice/</code> folder</a> you get a throwaway file and a guided walkthrough. Start by cloning this repo:</p>
+        <p><strong>Set up once:</strong> clone this repo and move into the practice folder.</p>
         <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git clone https://github.com/eriic-builds/git-learning-lab.git
 cd git-learning-lab/practice</div>
-        <p>Then follow <code class="inline">exercises.md</code>, which walks you through:</p>
-        <ul class="clean">
-          <li><strong>Exercise 1</strong> &mdash; edit <code class="inline">hello.txt</code>, make your first commit.</li>
-          <li><strong>Exercise 2</strong> &mdash; create a branch, change the file, merge it back.</li>
-          <li><strong>Exercise 3</strong> &mdash; push a branch and open your first pull request.</li>
-          <li><strong>Exercise 4</strong> &mdash; do it all again, this time by asking Copilot CLI.</li>
-        </ul>
+        <div class="callout">
+          <span class="ct">Your compass</span>
+          Stuck at any point? Run <code class="inline">git status</code>. It almost always tells you
+          what state you&rsquo;re in and what to do next.
+        </div>
+      </div>
+
+      <!-- Exercise 1 -->
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:4px">Exercise 1 &mdash; Your first commit</h3>
+        <p class="goal"><strong>Goal:</strong> turn an edit into a saved snapshot in history.</p>
+
+        <div class="exercise">
+          <div class="try"><span class="lbl">Try it yourself</span>
+            Open <code class="inline">hello.txt</code>, add a line like <em>&ldquo;Practiced by &lt;name&gt; on &lt;date&gt;&rdquo;</em>, and save. Now &mdash; how do you check what git noticed, then save that change as a commit?
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <p>See what changed, stage it, then commit it:</p>
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git status                 <span class="cm"># shows hello.txt as "modified"</span>
+git add hello.txt         <span class="cm"># stage it for the next snapshot</span>
+git commit -m "Add my name to hello.txt"</div>
+              <p>Confirm it landed in history:</p>
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git log --oneline</div>
+              <div class="why"><b>Why two steps (add, then commit)?</b> Git separates <em>choosing</em>
+              what goes in a snapshot (<code class="inline">add</code>, the &ldquo;staging area&rdquo;)
+              from <em>saving</em> it (<code class="inline">commit</code>). That lets you commit only
+              some of your changes and leave the rest for later. A commit is a permanent, labelled
+              point you can always return to.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Exercise 2 -->
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:4px">Exercise 2 &mdash; A branch and a merge</h3>
+        <p class="goal"><strong>Goal:</strong> make a change safely off to the side, then fold it into <code class="inline">main</code>.</p>
+
+        <div class="exercise">
+          <div class="try"><span class="lbl">Try it yourself &mdash; part 1</span>
+            Create a new branch called <code class="inline">practice-branch</code> and switch onto it. How?
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c practice-branch</div>
+              <div class="why"><b>What&rsquo;s going on?</b> The <code class="inline">-c</code> means
+              &ldquo;create&rdquo;. You now have a second, independent line of work. Commits you make
+              here do <em>not</em> touch <code class="inline">main</code> &mdash; that&rsquo;s what makes
+              a branch a safe place to experiment.</div>
+            </div>
+          </details>
+
+          <div class="try"><span class="lbl">Try it yourself &mdash; part 2</span>
+            Add another line to <code class="inline">hello.txt</code>, commit it, then switch back to
+            <code class="inline">main</code>. What do you expect <code class="inline">hello.txt</code> to
+            look like on <code class="inline">main</code>?
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git add hello.txt
+git commit -m "Add a second line on a branch"
+git switch main</div>
+              <div class="why"><b>Notice the surprise.</b> On <code class="inline">main</code>, your
+              second line is <em>gone</em>. It hasn&rsquo;t disappeared &mdash; it lives on
+              <code class="inline">practice-branch</code>. Each branch has its own version of the files.
+              Switching branches swaps your working files to match that branch. This is the &ldquo;aha&rdquo;
+              moment of branching.</div>
+            </div>
+          </details>
+
+          <div class="try"><span class="lbl">Try it yourself &mdash; part 3</span>
+            Bring the branch&rsquo;s change into <code class="inline">main</code>, then tidy up the branch.
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git merge practice-branch   <span class="cm"># now your line appears on main</span>
+git branch -d practice-branch</div>
+              <div class="why"><b>Why merge, then delete?</b> <code class="inline">merge</code> copies the
+              branch&rsquo;s commits into <code class="inline">main</code>, so the work is now part of the
+              main line. Once merged, the branch has done its job &mdash;
+              <code class="inline">-d</code> safely deletes it (git refuses if it isn&rsquo;t merged yet,
+              protecting you from losing work).</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Exercise 3 -->
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:4px">Exercise 3 &mdash; Your first pull request</h3>
+        <p class="goal"><strong>Goal:</strong> propose a change on GitHub and merge it there. <span style="color:var(--cp-text-soft)">(Use a repo you own, or <a href="https://github.com/eriic-builds/git-learning-lab/fork">fork</a> this one first.)</span></p>
+
+        <div class="exercise">
+          <div class="try"><span class="lbl">Try it yourself</span>
+            Make a branch, commit a small edit, and get it up to GitHub so you can open a pull request.
+            Which commands, in order?
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c my-first-pr
+git add hello.txt
+git commit -m "Practice change for a pull request"
+git push -u origin my-first-pr</div>
+              <p>Then on GitHub: click <strong>Compare &amp; pull request</strong>, add a title and note,
+              and <strong>Create pull request</strong>. Review the diff, then <strong>Merge</strong>.
+              Finally, update your local <code class="inline">main</code>:</p>
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main
+git pull</div>
+              <div class="why"><b>What is <code class="inline">-u origin</code> doing?</b> It pushes your
+              branch to GitHub (<code class="inline">origin</code>) and links your local branch to it, so
+              future <code class="inline">git push</code>/<code class="inline">pull</code> need no extra
+              arguments. <b>Why a PR at all?</b> A pull request is a reviewable, commentable before/after
+              view of your change &mdash; a clean record of <em>what</em> changed and <em>why</em>, even
+              when you&rsquo;re working solo.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Exercise 4 -->
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:4px">Exercise 4 &mdash; Let Copilot CLI do it</h3>
+        <p class="goal"><strong>Goal:</strong> repeat the flow, but ask in plain English &mdash; and watch what it runs.</p>
+
+        <div class="exercise">
+          <div class="try"><span class="lbl">Try it yourself</span>
+            Start Copilot CLI in the repo folder and ask it to make a branch, commit your changes, and
+            open a pull request. What might you type?
+          </div>
+          <details class="reveal">
+            <summary>Check your approach</summary>
+            <div class="reveal-body">
+              <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>npm install -g @github/copilot   <span class="cm"># once, needs Node.js 22+</span>
+copilot                          <span class="cm"># start in your repo folder, then /login</span></div>
+              <p>Then try prompts like:</p>
+              <ul class="clean">
+                <li>&ldquo;What changed in hello.txt since my last commit?&rdquo;</li>
+                <li>&ldquo;Make a new branch called copilot-practice and switch to it.&rdquo;</li>
+                <li>&ldquo;Commit my changes with a clear message, push, and open a pull request.&rdquo;</li>
+              </ul>
+              <div class="why"><b>Stay in the driver&rsquo;s seat.</b> Before running anything that
+              changes files, Copilot shows you the exact command and asks for approval. Read each one &mdash;
+              you already know these commands now, so you can tell whether it&rsquo;s doing the right thing.
+              Approve what you understand; press <b>Esc</b> to stop and redirect it. That&rsquo;s the whole
+              point of learning the basics first: the AI speeds you up without becoming a black box.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="callout good">
+        <span class="ct">Done all four?</span>
+        You&rsquo;ve run the full loop by hand and with AI. The prompts and full write-up also live in
+        <a href="https://github.com/eriic-builds/git-learning-lab/tree/main/practice"><code class="inline">practice/exercises.md</code></a>
+        if you want them in the repo itself.
       </div>
     </section>
 
