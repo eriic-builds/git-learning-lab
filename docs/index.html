@@ -382,9 +382,10 @@ table.req td code.inline { white-space: nowrap; }
 /* Simulated terminal panel — a "screenshot" of expected output, self-contained */
 .term { border: 1px solid var(--cp-border); border-radius: 10px; overflow: hidden; margin: 14px 0; box-shadow: 0 0 2px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.14); }
 .term-bar { display: flex; align-items: center; gap: 7px; background: var(--cp-bg-elevated); border-bottom: 1px solid var(--cp-border); padding: 8px 12px; }
-.term-bar .tdot { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
-.term-bar .tdot.r { background: #ff5f56; } .term-bar .tdot.y { background: #ffbd2e; } .term-bar .tdot.g { background: #27c93f; }
-.term-bar .tlabel { margin-left: 6px; font-size: 11px; color: var(--cp-text-soft); font-family: "Segoe UI", sans-serif; }
+.term-bar .tico { font-family: Consolas, "Courier New", monospace; font-weight: 700; font-size: 11px; color: var(--cp-accent); background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 4px; padding: 0 5px; flex: 0 0 auto; }
+.term-bar .tlabel { font-size: 11px; color: var(--cp-text-soft); font-family: "Segoe UI", Segoe, sans-serif; }
+.term-bar .twin { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.term-bar .tw { font-size: 11px; line-height: 1; color: var(--cp-text-muted); font-family: "Segoe UI", sans-serif; }
 .term-body { background: var(--cp-surface-soft); padding: 14px 16px; font-family: Consolas, "Courier New", monospace; font-size: 12.5px; line-height: 1.7; overflow-x: auto; white-space: pre; color: var(--cp-text); }
 .term-body .pr { color: var(--cp-accent); font-weight: 700; }
 .term-body .cmd { color: var(--cp-text); font-weight: 600; }
@@ -742,19 +743,19 @@ git commit -m "Add my name to hello.txt"</div>
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git log --oneline</div>
               <div class="term-cap">What you should see</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
-<div class="term-body"><span class="pr">$</span> <span class="cmd">git status</span>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git status</span>
 On branch main
 Changes not staged for commit:
   (use "git add &lt;file&gt;..." to update what will be committed)
 	modified:   hello.txt
 
 no changes added to commit (use "git add" and/or "git commit -a")
-<span class="pr">$</span> <span class="cmd">git add hello.txt</span>
-<span class="pr">$</span> <span class="cmd">git commit -m "Add my name to hello.txt"</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git add hello.txt</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git commit -m "Add my name to hello.txt"</span>
 <span class="ok">[main 5faa7f4] Add my name to hello.txt</span>
  1 file changed, 1 insertion(+)
-<span class="pr">$</span> <span class="cmd">git log --oneline</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git log --oneline</span>
 <span class="hl">5faa7f4</span> Add my name to hello.txt
 <span class="hl">ae54cec</span> Initial commit</div>
               </div>
@@ -783,8 +784,8 @@ no changes added to commit (use "git add" and/or "git commit -a")
               <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c practice-branch</div>
               <div class="term-cap">What you should see</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
-<div class="term-body"><span class="pr">$</span> <span class="cmd">git switch -c practice-branch</span>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git switch -c practice-branch</span>
 <span class="ok">Switched to a new branch 'practice-branch'</span></div>
               </div>
               <div class="why"><b>What&rsquo;s going on?</b> The <code class="inline">-c</code> means
@@ -807,12 +808,12 @@ git commit -m "Add a second line on a branch"
 git switch main</div>
               <div class="term-cap">What you should see</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
-<div class="term-body"><span class="pr">$</span> <span class="cmd">git add hello.txt</span>
-<span class="pr">$</span> <span class="cmd">git commit -m "Add a second line on a branch"</span>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git add hello.txt</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git commit -m "Add a second line on a branch"</span>
 <span class="ok">[practice-branch d3f91e7] Add a second line on a branch</span>
  1 file changed, 1 insertion(+)
-<span class="pr">$</span> <span class="cmd">git switch main</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git switch main</span>
 <span class="ok">Switched to branch 'main'</span>
 <span class="cmt"># open hello.txt now — your second line is not here</span></div>
               </div>
@@ -834,13 +835,13 @@ git switch main</div>
 git branch -d practice-branch</div>
               <div class="term-cap">What you should see</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
-<div class="term-body"><span class="pr">$</span> <span class="cmd">git merge practice-branch</span>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git merge practice-branch</span>
 Updating 5faa7f4..d3f91e7
 <span class="ok">Fast-forward</span>
  hello.txt | 1 +
  1 file changed, 1 insertion(+)
-<span class="pr">$</span> <span class="cmd">git branch -d practice-branch</span>
+<span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git branch -d practice-branch</span>
 <span class="ok">Deleted branch practice-branch (was d3f91e7).</span></div>
               </div>
               <div class="why"><b>Why merge, then delete?</b> <code class="inline">merge</code> copies the
@@ -877,8 +878,8 @@ git push -u origin my-first-pr</div>
 git pull</div>
               <div class="term-cap">What you should see</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">Terminal — practice</span></div>
-<div class="term-body"><span class="pr">$</span> <span class="cmd">git push -u origin my-first-pr</span>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\git-learning-lab\practice&gt;</span> <span class="cmd">git push -u origin my-first-pr</span>
 Enumerating objects: 5, done.
 Counting objects: 100% (5/5), done.
 Writing objects: 100% (3/3), 320 bytes, done.
@@ -925,7 +926,7 @@ copilot                          <span class="cm"># start in your repo folder, t
               </ul>
               <div class="term-cap">What it looks like (example)</div>
               <div class="term">
-                <div class="term-bar"><span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span><span class="tlabel">GitHub Copilot CLI</span></div>
+                <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">GitHub Copilot CLI</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
 <div class="term-body"><span class="pr">&gt;</span> <span class="cmd">Make a branch called copilot-practice and commit my changes.</span>
 
   I'll run these git commands:
@@ -990,6 +991,30 @@ git commit -m "<span class="pm">Increase session timeout to 30 min</span>"</div>
             <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git push -u origin <span class="pm">fix-login-timeout</span></div>
           </li>
         </ol>
+        <div class="term-cap">What the branch loop looks like</div>
+        <div class="term">
+          <div class="term-bar"><span class="tico">&gt;_</span><span class="tlabel">Windows PowerShell</span><span class="twin"><span class="tw">&#9472;</span><span class="tw">&#9633;</span><span class="tw x">&#10005;</span></span></div>
+<div class="term-body"><span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git switch main</span>
+<span class="ok">Already on 'main'</span>
+<span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git pull</span>
+Already up to date.
+<span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git switch -c fix-login-timeout</span>
+<span class="ok">Switched to a new branch 'fix-login-timeout'</span>
+<span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git add .</span>
+<span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git commit -m "Increase session timeout to 30 min"</span>
+<span class="ok">[fix-login-timeout 7c2a9f0] Increase session timeout to 30 min</span>
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+<span class="pr">PS C:\my-project&gt;</span> <span class="cmd">git push -u origin fix-login-timeout</span>
+Enumerating objects: 5, done.
+Writing objects: 100% (3/3), 412 bytes, done.
+remote:
+remote: Create a pull request for 'fix-login-timeout' on GitHub by visiting:
+remote:      <span class="hl">https://github.com/you/my-project/pull/new/fix-login-timeout</span>
+remote:
+To https://github.com/you/my-project.git
+ <span class="ok">* [new branch]      fix-login-timeout -&gt; fix-login-timeout</span>
+branch 'fix-login-timeout' set up to track 'origin/fix-login-timeout'.</div>
+        </div>
         <p style="margin-bottom:0">Keep making, committing, and pushing changes until you&rsquo;re ready for feedback.</p>
       </div>
 
