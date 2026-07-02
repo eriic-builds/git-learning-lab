@@ -53,7 +53,7 @@ It covers nine short sections:
 | # | Section | You learn to |
 | --- | --- | --- |
 | 00 | Mental model | Speak git: repo, commit, remote, push/pull, branch |
-| 01 | Setup | Install git and stamp your name on commits |
+| 01 | Setup | Install git, sign in to GitHub, stamp your name on commits |
 | 02 | Everyday loop | clone, status, add, commit, push, pull |
 | 03 | Undo mistakes | restore, amend, revert — safely |
 | 04 | Branches & merges | Work in a sandbox, then fold it back in |
@@ -64,14 +64,18 @@ It covers nine short sections:
 | 09 | Gotchas | Sidestep the traps that trip up newcomers |
 
 Every command block has a **Copy** button, and there are three reading modes
-(Light, Dark, and a dyslexia-friendly Reading mode).
+(Light, Dark, and a dyslexia-friendly Reading mode). The Practice lab and Project
+workflow sections include **Windows PowerShell terminal "screenshots"** so you can
+see exactly what each command should look like as you follow along.
 
 ---
 
 ## Practice and prove it
 
 Reading isn't learning — **doing** is. The **[`practice/`](practice/)** folder is a safe
-sandbox with a throwaway file and a guided walkthrough.
+sandbox with a throwaway file and a guided walkthrough. The Practice lab section of the
+guide adds **try-it-yourself steps** with expandable reveals — attempt each command first,
+then open the reveal to check your approach and learn *why* it works.
 
 ```bash
 git clone https://github.com/eriic-builds/git-learning-lab.git
