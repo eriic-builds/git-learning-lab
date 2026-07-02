@@ -393,7 +393,8 @@ table.req td code.inline { white-space: nowrap; }
       <a href="#prs"><span class="node"></span><span class="lbl-num">05</span> Pull requests</a>
       <a href="#copilot"><span class="node"></span><span class="lbl-num">06</span> Copilot CLI</a>
       <a href="#practice"><span class="node"></span><span class="lbl-num">07</span> Practice lab</a>
-      <a href="#gotchas"><span class="node"></span><span class="lbl-num">08</span> Gotchas</a>
+      <a href="#workflow"><span class="node"></span><span class="lbl-num">08</span> Project workflow</a>
+      <a href="#gotchas"><span class="node"></span><span class="lbl-num">09</span> Gotchas</a>
     </nav>
   </aside>
 
@@ -642,9 +643,83 @@ cd git-learning-lab/practice</div>
       </div>
     </section>
 
-    <!-- 08 GOTCHAS -->
+    <!-- 08 PROJECT WORKFLOW -->
+    <section id="workflow">
+      <h2><span class="snum">08</span> A real project workflow</h2>
+      <p class="lede">How git and GitHub are actually used to build a project over time. This is <strong>GitHub flow</strong> &mdash; the lightweight, branch-based workflow GitHub itself uses for its docs, policies, and roadmap. It scales from a solo project to a big team.</p>
+
+      <div class="callout">
+        <span class="ct">The shape of it</span>
+        <strong>Issue &rarr; branch &rarr; commits &rarr; pull request &rarr; review &rarr; merge &rarr; delete branch.</strong>
+        Then repeat for the next piece of work. Your <code class="inline">main</code> branch always
+        stays in a working, shippable state; all new work happens on branches.
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">A. Decide what to work on &mdash; an Issue</h3>
+        <p>On GitHub, open an <strong>Issue</strong> for the task or bug (e.g. &ldquo;Login times out too fast&rdquo;). Issues are your to-do list: they give the work a number (like <code class="inline">#12</code>) you can link to later, and a place to discuss it.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">B. Build it &mdash; the branch loop</h3>
+        <ol class="steps">
+          <li><strong>Start from an up-to-date main</strong>
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main
+git pull</div>
+          </li>
+          <li><strong>Create a short, descriptive branch</strong> &mdash; one branch per unrelated change.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch -c <span class="pm">fix-login-timeout</span></div>
+          </li>
+          <li><strong>Make small, complete commits</strong> &mdash; ideally each commit is one isolated change, so it&rsquo;s easy to revert or build on later.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git add .
+git commit -m "<span class="pm">Increase session timeout to 30 min</span>"</div>
+          </li>
+          <li><strong>Push to back up your work</strong> &mdash; the first push sets the branch&rsquo;s upstream; after that, just <code class="inline">git push</code>.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git push -u origin <span class="pm">fix-login-timeout</span></div>
+          </li>
+        </ol>
+        <p style="margin-bottom:0">Keep making, committing, and pushing changes until you&rsquo;re ready for feedback.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">C. Propose it &mdash; the pull request</h3>
+        <ol class="steps">
+          <li><strong>Open a pull request</strong> on GitHub. Write a summary of <em>what</em> changed and <em>what problem</em> it solves.</li>
+          <li><strong>Link the issue</strong> so it closes automatically when the PR merges &mdash; put a keyword in the PR description:
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>Closes #<span class="pm">12</span></div>
+          </li>
+          <li><strong>Review &amp; checks</strong> &mdash; reviewers comment on specific lines; any configured <em>status checks</em> (automated tests) run on the PR so you catch errors before merging. Push more commits to respond &mdash; the PR updates itself.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">D. Ship it &mdash; merge &amp; clean up</h3>
+        <ol class="steps">
+          <li><strong>Merge</strong> once approved. Your change lands on <code class="inline">main</code>, and the linked issue closes.</li>
+          <li><strong>Delete the branch</strong> (GitHub offers a button). Nothing is lost &mdash; the PR and its history stay, and a branch can be restored if needed.</li>
+          <li><strong>Update your local main</strong> for the next piece of work.
+            <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button>git switch main
+git pull</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="callout warn">
+        <span class="ct">On real teams: protected branches</span>
+        Shared repos often <strong>protect</strong> <code class="inline">main</code> so you <em>can&rsquo;t</em> commit to it directly &mdash; a merge requires a pull request, a set number of approvals, and passing status checks. This is why the branch-and-PR habit matters even when you work solo: it&rsquo;s the same flow the whole team relies on.
+      </div>
+
+      <div class="callout good">
+        <span class="ct">Do it with Copilot CLI</span>
+        Once the flow is muscle memory, drive it by asking: &ldquo;Create a branch for issue&nbsp;12, commit my changes, push, and open a pull request that closes&nbsp;#12.&rdquo; Copilot runs each step, asking your approval before it acts.
+      </div>
+
+      <p style="font-size:13px;color:var(--cp-text-soft)">Based on <a href="https://docs.github.com/en/get-started/using-github/github-flow">GitHub Docs &mdash; GitHub flow</a>.</p>
+    </section>
+
+    <!-- 09 GOTCHAS -->
     <section id="gotchas">
-      <h2><span class="snum">08</span> Gotchas &amp; checklist</h2>
+      <h2><span class="snum">09</span> Gotchas &amp; checklist</h2>
       <p class="lede">The small traps that trip up newcomers &mdash; and how to sidestep them.</p>
       <div class="card">
         <table class="req">

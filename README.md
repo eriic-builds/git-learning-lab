@@ -60,7 +60,8 @@ It covers nine short sections:
 | 05 | Pull requests | Propose and review a change on GitHub |
 | 06 | Copilot CLI | Drive all of it with plain-English prompts |
 | 07 | Practice lab | Do it for real in the `practice/` sandbox |
-| 08 | Gotchas | Sidestep the traps that trip up newcomers |
+| 08 | Project workflow | Run a real project with GitHub flow: issue → branch → PR → merge |
+| 09 | Gotchas | Sidestep the traps that trip up newcomers |
 
 Every command block has a **Copy** button, and there are three reading modes
 (Light, Dark, and a dyslexia-friendly Reading mode).
