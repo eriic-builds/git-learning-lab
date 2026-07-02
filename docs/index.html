@@ -522,6 +522,31 @@ git config --global user.email "<span class="pm">you@example.com</span>"</div>
           The private <code class="inline">username@users.noreply.github.com</code> address works too.
         </div>
       </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:10px">C. Sign in to GitHub</h3>
+        <p>This is the step most guides skip &mdash; and the wall most beginners hit.
+        <strong>GitHub no longer accepts your account password on the command line</strong>, so
+        your first <code class="inline">git push</code> will fail until you sign in properly.</p>
+        <div class="callout">
+          <span class="ct">No account yet?</span>
+          Create a free one at <a href="https://github.com/signup">github.com/signup</a> first &mdash;
+          the username and email you pick here are what you configured in step&nbsp;B.
+        </div>
+        <p style="margin-top:12px">The easiest, official way is <strong>GitHub CLI</strong>, which works on
+        Windows, macOS, and Linux and stores your login for you:</p>
+        <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">Copy</button><span class="cm"># install GitHub CLI (pick your system):</span>
+winget install GitHub.cli        <span class="cm"># Windows</span>
+brew install gh                  <span class="cm"># macOS / Linux (Homebrew)</span>
+
+gh auth login                    <span class="cm"># then choose: GitHub.com -> HTTPS -> Yes (authenticate Git)</span></div>
+        <div class="callout good">
+          <span class="ct">Or just let it prompt you</span>
+          On <strong>Windows and macOS</strong>, Git ships with <em>Git Credential Manager</em>. The first
+          time you <code class="inline">git clone</code> or <code class="inline">push</code> a private
+          repo, a browser window opens to sign in &mdash; do that once and you&rsquo;re set. (On macOS,
+          install it with <code class="inline">brew install --cask git-credential-manager</code> if needed.)
+        </div>
+      </div>
     </section>
 
     <!-- 02 EVERYDAY LOOP -->
@@ -925,7 +950,7 @@ git pull</div>
           <tr><td>Pushed to the wrong branch</td><td>Check with <code class="inline">git status</code> <em>before</em> pushing &mdash; it names your current branch.</td></tr>
           <tr><td>Forgot to pull, now push is rejected</td><td>Run <code class="inline">git pull</code> first, resolve any conflict, then push again.</td></tr>
           <tr><td>Committed a file you didn&rsquo;t mean to</td><td>Add its name to a <code class="inline">.gitignore</code> file so git stops tracking new ones.</td></tr>
-          <tr><td>Asked to log in every push</td><td>Let Git Credential Manager (installed with Git for Windows) remember your GitHub login.</td></tr>
+          <tr><td>Asked to log in every push (or push is rejected)</td><td>You haven&rsquo;t signed in &mdash; do the one-time <strong>Sign in to GitHub</strong> step in section&nbsp;01 (GitHub CLI or Git Credential Manager). Passwords don&rsquo;t work on the command line.</td></tr>
         </table>
       </div>
       <div class="callout good">
