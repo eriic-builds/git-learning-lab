@@ -30,17 +30,7 @@ being locked out of the tool the whole software world collaborates on.
 
 ---
 
-## Tell them → Teach them → Tell them again
-
-This lab follows a simple teaching arc so nothing gets lost:
-
-1. **Tell them** — what you'll be able to do, and the five words that unlock everything.
-2. **Teach them** — the exact commands, section by section, each with a copy button.
-3. **Tell them again** — a recap and a checklist, plus a sandbox to prove it to yourself.
-
----
-
-## Tell them: what you'll be able to do
+## What you'll be able to do
 
 By the end you can confidently:
 
@@ -55,7 +45,7 @@ your project; a *branch* is a safe sandbox to try things before they join `main`
 
 ---
 
-## Teach them: the guide
+## The guide
 
 Open **[`docs/index.html`](docs/index.html)** (or the [live page](https://eriic-builds.github.io/git-learning-lab/)).
 It covers nine short sections:
@@ -77,7 +67,7 @@ Every command block has a **Copy** button, and there are three reading modes
 
 ---
 
-## Tell them again: practice and prove it
+## Practice and prove it
 
 Reading isn't learning — **doing** is. The **[`practice/`](practice/)** folder is a safe
 sandbox with a throwaway file and a guided walkthrough.
